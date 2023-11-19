@@ -1,0 +1,36 @@
+package humc.lab.ext.invoker
+
+import humc.lab.ext.core.Extension
+import humc.lab.ext.core.ExtensionCenter
+import kotlin.reflect.KClass
+
+/**
+ * @author: humingchuan
+ * @date: 2023-11-18 16:36
+ * @description
+ */
+class ObservableExtensionInvoker<E : Extension, R>(
+    private val observers: List<ExtensionObserver<E, R>>,
+) {
+    fun invoke(callable: Function1<E, R>, clazz: KClass<E>): R? {
+        val extensions = ExtensionCenter.getExtensions(clazz)
+        var ret: R? = null
+        for (extension in extensions) {
+            for (observer in observers) {
+                if (observer.before(extension).shouldStop()) {
+                    return ret
+                }
+            }
+            ret = callable.invoke(extension)
+
+            for (observer in observers) {
+                val result = observer.after(extension, ret)
+                ret = result.ret
+                if (result.processTag.shouldStop()) {
+                    return ret
+                }
+            }
+        }
+        return ret
+    }
+}
