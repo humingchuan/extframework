@@ -2,13 +2,14 @@ package humc.lab.ext.core.invoker
 
 import humc.lab.ext.core.model.Extension
 import humc.lab.ext.core.ExtensionCenter
+import humc.lab.ext.core.model.Combinable
 
 /**
  * @author: humingchuan
  * @date: 2023-11-18 16:36
  * @description
  */
-class ObservableExtensionInvoker<E : Extension<E>, R>(
+class ObservableExtensionInvoker<E : Combinable<E>, R>(
     private val observers: List<ExtensionObserver<E, R>>,
 ) {
     fun invoke(callable: Function1<E, R>, code: String): R? {

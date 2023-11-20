@@ -1,5 +1,6 @@
 package humc.lab.ext.core.invoker
 
+import humc.lab.ext.core.model.Combinable
 import humc.lab.ext.core.model.Extension
 
 /**
@@ -7,7 +8,7 @@ import humc.lab.ext.core.model.Extension
  * @date: 2023-11-19 13:55
  * @description
  */
-class FirstInvoker<E : Extension<E>, R> {
+class FirstInvoker<E : Combinable<E>, R> {
     private val invoker: ObservableExtensionInvoker<E, R>
 
     init {

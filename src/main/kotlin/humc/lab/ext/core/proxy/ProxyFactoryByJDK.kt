@@ -2,7 +2,7 @@ package humc.lab.ext.core.proxy
 
 import humc.lab.ext.core.*
 import humc.lab.ext.core.invoker.InvokerFacade
-import humc.lab.ext.core.model.Extension
+import humc.lab.ext.core.model.*
 import sun.misc.ProxyGenerator
 import java.io.FileOutputStream
 import java.io.IOException
@@ -16,40 +16,21 @@ import kotlin.reflect.KClass
  * @description
  */
 class ProxyFactoryByJDK {
-
     companion object {
-        private val firstMethod: Method
+        val fakeExtension = FakeExtension()
 
-        init {
-            firstMethod = Extension::class.java.getDeclaredMethod("first", Function1::class.java)
-        }
-
-        fun <E : Extension<E>> proxy(clazz: KClass<E>): E {
+        fun <E : Combinable<E>> proxy(clazz: KClass<E>): E {
             val javaClazz = clazz.java
             val proxy = Proxy.newProxyInstance(javaClazz.classLoader, arrayOf(javaClazz), object : InvocationHandler {
                 override fun invoke(proxy: Any, method: Method, args: Array<out Any>): Any? {
-                    val spi = method.getAnnotation(Spi::class.java)
-                    val extension = FakeExtension()
-                    if (spi == null) {
-                        // TODO: 这里加上白名单，避免出现空指针
-                        return method.invoke(null, *args)
+                    val declaringClass = method.declaringClass
+                    if (declaringClass == Combinable::class.java) {
+                        return method.invoke(fakeExtension, *args)
                     }
 
-                    //return firstMethod.invoke(proxy, object : Function1<E, Any?> {
-                    //    override fun invoke(p1: E): Any? {
-                    //        return method.invoke(p1, *args)
-                    //    }
-                    //})
-                    return InvokerFacade.first(object : Function1<E, Any?> {
-                        override fun invoke(p1: E): Any? {
-                            return method.invoke(p1, *args)
-                        }
-                    }, extension.getCode())
-
-                };
+                    return InvokerFacade.first({ e -> method.invoke(e, *args) }, getCode(clazz)!!)
+                }
             })
-
-            dumpClass(proxy)
 
             return proxy as E
         };
@@ -75,7 +56,7 @@ class ProxyFactoryByJDK {
 
     class FakeExtension : ExtensionProxyJava<FakeExtension>() {
         override fun getCode(): String {
-            return "NameSpi"
+            return "FakeExtension"
         }
     }
 

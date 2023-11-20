@@ -1,5 +1,6 @@
 package humc.lab.ext.core.invoker
 
+import humc.lab.ext.core.model.Combinable
 import humc.lab.ext.core.model.Extension
 
 /**
@@ -7,7 +8,7 @@ import humc.lab.ext.core.model.Extension
  * @date: 2023-11-19 14:01
  * @description
  */
-class AllUntilInvoker<E : Extension<E>, T>(
+class AllUntilInvoker<E : Combinable<E>, T>(
     private val checker: Function1<T?, Boolean>
 ) {
     private val invoker: ObservableExtensionInvoker<E, T>

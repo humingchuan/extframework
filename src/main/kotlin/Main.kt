@@ -49,7 +49,7 @@ fun test2() {
     val spi: NameSpi = ProxyFactoryByJDK.proxy(NameSpi::class)
     var bizObj = MyBizObj("hi")
 
-    //spi.first { enrichName(bizObj) }
+    spi.first { enrichName(bizObj) }
     spi.enrichName(bizObj)
     println(bizObj.name)
 }

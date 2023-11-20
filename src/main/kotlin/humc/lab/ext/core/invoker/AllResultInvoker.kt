@@ -1,5 +1,6 @@
 package humc.lab.ext.core.invoker
 
+import humc.lab.ext.core.model.Combinable
 import humc.lab.ext.core.model.Extension
 
 /**
@@ -7,7 +8,7 @@ import humc.lab.ext.core.model.Extension
  * @date: 2023-11-19 14:01
  * @description
  */
-class AllResultInvoker<E : Extension<E>, T>(
+class AllResultInvoker<E : Combinable<E>, T>(
 ) {
     private val invoker: ObservableExtensionInvoker<E, T>
 
@@ -30,7 +31,7 @@ class AllResultInvoker<E : Extension<E>, T>(
     }
 
     fun invoke(callable: Function1<E, T>, code: String): List<T> {
-        invoker.invoke(callable,code)
+        invoker.invoke(callable, code)
         return resultList
     }
 }

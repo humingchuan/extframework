@@ -7,8 +7,8 @@ import humc.lab.ext.core.invoker.*
  * @date: 2023-11-20 12:58
  * @description
  */
-interface Combinable<E> {
-
+interface Combinable<E : Combinable<E>> {
+    fun getCode(): String
     fun <T> first(callable: E.() -> T): T? {
         return InvokerFacade.first(callable, getCode())
     }

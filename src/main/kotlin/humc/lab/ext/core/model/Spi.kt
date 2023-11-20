@@ -1,4 +1,4 @@
-package humc.lab.ext.core
+package humc.lab.ext.core.model
 
 import java.lang.annotation.Inherited
 
@@ -8,7 +8,7 @@ import java.lang.annotation.Inherited
  * @description
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Inherited
 annotation class Spi(
     val code: String = ""
