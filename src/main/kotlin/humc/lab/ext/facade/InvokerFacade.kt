@@ -11,30 +11,29 @@ import kotlin.reflect.KClass
  */
 class InvokerFacade {
     companion object {
-        fun <E : Extension, T> first(callable: Function1<E, T>, clazz: KClass<E>): T? {
-            return FirstInvoker<E, T>().invoke(callable, clazz)
+        fun <E : Extension<E>, T> first(callable: Function1<E, T>, code: String): T? {
+            return FirstInvoker<E, T>().invoke(callable, code)
         }
 
-        fun <E : Extension, T> firstNonNull(callable: Function1<E, T>, clazz: KClass<E>): T? {
-            return FirstNonNullInvoker<E, T>().invoke(callable, clazz)
+        fun <E : Extension<E>, T> firstNonNull(callable: Function1<E, T>, code: String): T? {
+            return FirstNonNullInvoker<E, T>().invoke(callable, code)
         }
 
-        fun <E : Extension, T> all(callable: Function1<E, T>, clazz: KClass<E>): T? {
-            return AllInvoker<E, T>().invoke(callable, clazz)
+        fun <E : Extension<E>, T> all(callable: Function1<E, T>, code: String): T? {
+            return AllInvoker<E, T>().invoke(callable, code)
         }
 
-        fun <E : Extension, T> allUntil(
+        fun <E : Extension<E>, T> allUntil(
             checker: Function1<T?, Boolean>,
-            callable: Function1<E, T>, clazz: KClass<E>
+            callable: Function1<E, T>, code: String
         ): T? {
-            return AllUntilInvoker<E, T>(checker).invoke(callable, clazz)
+            return AllUntilInvoker<E, T>(checker).invoke(callable, code)
         }
 
-        fun <E : Extension, T> allResult(
-            checker: Function1<T?, Boolean>,
-            callable: Function1<E, T>, clazz: KClass<E>
+        fun <E : Extension<E>, T> allResult(
+            callable: Function1<E, T>, code: String
         ): List<T> {
-            return AllResultInvoker<E, T>(checker).invoke(callable, clazz)
+            return AllResultInvoker<E, T>().invoke(callable, code)
         }
     }
 

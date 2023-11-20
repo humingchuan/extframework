@@ -8,8 +8,7 @@ import kotlin.reflect.KClass
  * @date: 2023-11-19 14:01
  * @description
  */
-class AllResultInvoker<E : Extension, T>(
-    private val checker: Function1<T?, Boolean>
+class AllResultInvoker<E : Extension<E>, T>(
 ) {
     private val invoker: ObservableExtensionInvoker<E, T>
 
@@ -31,8 +30,8 @@ class AllResultInvoker<E : Extension, T>(
         invoker = ObservableExtensionInvoker(listOf(stopAfterFirstUntil))
     }
 
-    fun invoke(callable: Function1<E, T>, clazz: KClass<E>): List<T> {
-        invoker.invoke(callable, clazz)
+    fun invoke(callable: Function1<E, T>, code: String): List<T> {
+        invoker.invoke(callable,code)
         return resultList
     }
 }

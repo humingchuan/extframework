@@ -1,7 +1,7 @@
 package humc.lab.ext.facade
 
+import humc.lab.ext.demo.MyBizObj
 import humc.lab.ext.demo.NameSpi
-import java.util.concurrent.Callable
 
 /**
  * @author: humingchuan
@@ -9,16 +9,7 @@ import java.util.concurrent.Callable
  * @description
  */
 class NameSpiProxy : NameSpi {
-    override fun changeName(curName: String): String {
-        val f = { spi: NameSpi ->
-            spi.changeName(curName)
-        }
-
-        val ret: String? = InvokerFacade.first(f, NameSpi::class)
-        return ret!!
-    }
-
-    override fun getCode(): String {
-        TODO("Not yet implemented")
+    override fun enrichName(obj: MyBizObj) {
+        first { enrichName(obj) }
     }
 }

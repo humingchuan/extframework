@@ -8,7 +8,7 @@ import humc.lab.ext.core.Extension
  * @date: 2023-11-18 17:24
  * @description
  */
-interface ExtensionObserver<E : Extension, R> {
+interface ExtensionObserver<E : Extension<E>, R> {
     fun before(ext: E): ProcessTag
     fun after(ext: E, ret: R?): ResultHolder<R?>
 }

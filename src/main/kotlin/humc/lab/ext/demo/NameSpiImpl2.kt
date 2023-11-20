@@ -1,16 +1,18 @@
 package humc.lab.ext.demo
 
+import humc.lab.ext.core.ExtensionCenter
+
 /**
  * @author: humingchuan
  * @date: 2023-11-19 14:32
  * @description
  */
-class NameSpiImpl2 : NameSpi {
-    override fun changeName(curName: String): String {
-        return "${curName}_Haha"
+object NameSpiImpl2 : NameSpi {
+    init {
+        ExtensionCenter.register(NameSpiImpl1.getCode(), this)
     }
 
-    override fun getCode(): String {
-        return "NameSpiImpl2"
+    override fun enrichName(obj: MyBizObj) {
+        obj.name = "${obj.name}_haha"
     }
 }

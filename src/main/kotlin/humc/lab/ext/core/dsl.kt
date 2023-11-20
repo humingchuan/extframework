@@ -8,6 +8,7 @@ import kotlin.reflect.KClass
  * @description
  */
 
-fun <T : Extension> declareExt(clazz: KClass<T>): T {
-    return clazz.constructors.first().call()
+fun <T : Extension<T>> declareExt(clazz: KClass<T>): T {
+    val call = clazz.constructors.first().call()
+    return call
 }

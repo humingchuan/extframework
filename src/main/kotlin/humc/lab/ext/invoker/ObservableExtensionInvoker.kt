@@ -9,13 +9,14 @@ import kotlin.reflect.KClass
  * @date: 2023-11-18 16:36
  * @description
  */
-class ObservableExtensionInvoker<E : Extension, R>(
+class ObservableExtensionInvoker<E : Extension<E>, R>(
     private val observers: List<ExtensionObserver<E, R>>,
 ) {
-    fun invoke(callable: Function1<E, R>, clazz: KClass<E>): R? {
-        val extensions = ExtensionCenter.getExtensions(clazz)
+    fun invoke(callable: Function1<E, R>, code: String): R? {
+        val extensions = ExtensionCenter.getExtensions(code)
         var ret: R? = null
         for (extension in extensions) {
+            extension as E
             for (observer in observers) {
                 if (observer.before(extension).shouldStop()) {
                     return ret

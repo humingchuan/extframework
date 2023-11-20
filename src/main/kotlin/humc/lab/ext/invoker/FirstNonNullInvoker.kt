@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
  * @date: 2023-11-19 14:01
  * @description
  */
-class FirstNonNullInvoker<E : Extension, R> {
+class FirstNonNullInvoker<E : Extension<E>, R> {
     private val invoker: ObservableExtensionInvoker<E, R>
 
     init {
@@ -28,7 +28,7 @@ class FirstNonNullInvoker<E : Extension, R> {
         invoker = ObservableExtensionInvoker(listOf(stopAfterFirstNonNull))
     }
 
-    fun invoke(callable: Function1<E, R>, clazz: KClass<E>): R? {
-        return invoker.invoke(callable, clazz)
+    fun invoke(callable: Function1<E, R>, code: String): R? {
+        return invoker.invoke(callable, code)
     }
 }
