@@ -2,10 +2,7 @@ import humc.lab.ext.demo.MyBizObj
 import humc.lab.ext.demo.NameSpi
 import humc.lab.ext.demo.NameSpiImpl1
 import humc.lab.ext.demo.NameSpiImpl2
-import humc.lab.ext.facade.NameSpiProxy
-import humc.lab.ext.facade.ProxyFactory
-import humc.lab.ext.facade.ProxyFactory2
-import humc.lab.ext.facade.ProxyFactory3
+import humc.lab.ext.facade.*
 
 fun main(args: Array<String>) {
     test2()
@@ -52,9 +49,10 @@ fun test2() {
     NameSpiImpl1
     NameSpiImpl2
 
-    val spi: NameSpi = ProxyFactory2.proxy(NameSpi::class)
+    val spi: NameSpi = ProxyFactoryByJDK.proxy(NameSpi::class)
     var bizObj = MyBizObj("hi")
 
-    var changedName = spi.enrichName(bizObj)
+    spi.first { enrichName(bizObj) }
+    spi.enrichName(bizObj)
     println(bizObj.name)
 }

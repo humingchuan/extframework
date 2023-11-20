@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
  * @date: 2023-11-19 21:01
  * @description
  */
-class ProxyFactory2 {
+class ProxyFactoryByCompiler {
     companion object {
         fun <E : Extension<E>> proxy(clazz: KClass<E>): E {
             var javaCompiler = ToolProvider.getSystemJavaCompiler()
