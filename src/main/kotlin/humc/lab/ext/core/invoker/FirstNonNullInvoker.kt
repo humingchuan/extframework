@@ -1,7 +1,6 @@
-package humc.lab.ext.invoker
+package humc.lab.ext.core.invoker
 
-import humc.lab.ext.core.Extension
-import kotlin.reflect.KClass
+import humc.lab.ext.core.model.Extension
 
 /**
  * @author: humingchuan

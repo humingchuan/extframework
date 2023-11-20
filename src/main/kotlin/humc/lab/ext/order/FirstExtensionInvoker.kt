@@ -1,6 +1,6 @@
 //package humc.lab.ext.order
 //
-//import humc.lab.ext.core.Extension
+//import humc.lab.ext.core.model.Extension
 //import kotlin.reflect.KClass
 //
 ///**

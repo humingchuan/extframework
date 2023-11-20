@@ -1,5 +1,6 @@
 package humc.lab.ext.core
 
+import humc.lab.ext.core.model.Extension
 import kotlin.reflect.KClass
 
 /**

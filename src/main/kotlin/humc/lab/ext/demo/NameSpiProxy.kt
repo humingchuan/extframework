@@ -1,4 +1,4 @@
-package humc.lab.ext.facade
+package humc.lab.ext.demo
 
 import humc.lab.ext.demo.MyBizObj
 import humc.lab.ext.demo.NameSpi

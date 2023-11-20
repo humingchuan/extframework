@@ -1,14 +1,14 @@
-package humc.lab.ext.invoker
+package humc.lab.ext.core.invoker
 
-import humc.lab.ext.core.Extension
-import kotlin.reflect.KClass
+import humc.lab.ext.core.model.Extension
 
 /**
  * @author: humingchuan
  * @date: 2023-11-19 14:01
  * @description
  */
-class AllInvoker<E : Extension<E>, T>(
+class AllUntilInvoker<E : Extension<E>, T>(
+    private val checker: Function1<T?, Boolean>
 ) {
     private val invoker: ObservableExtensionInvoker<E, T>
 
@@ -19,7 +19,11 @@ class AllInvoker<E : Extension<E>, T>(
             }
 
             override fun after(ext: E, ret: T?): ResultHolder<T?> {
-                return ResultHolder(ret, ProcessTag.goOn())
+                return if (checker.invoke(ret)) {
+                    ResultHolder(ret, ProcessTag.stop())
+                } else {
+                    ResultHolder(ret, ProcessTag.goOn())
+                }
             }
         }
         invoker = ObservableExtensionInvoker(listOf(stopAfterFirstUntil))

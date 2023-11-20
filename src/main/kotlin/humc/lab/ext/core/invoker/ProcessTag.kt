@@ -1,4 +1,4 @@
-package humc.lab.ext.invoker
+package humc.lab.ext.core.invoker
 
 /**
  * @author: humingchuan

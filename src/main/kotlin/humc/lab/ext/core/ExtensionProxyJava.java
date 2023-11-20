@@ -1,6 +1,7 @@
 package humc.lab.ext.core;
 
-import humc.lab.ext.facade.InvokerFacade;
+import humc.lab.ext.core.model.Extension;
+import humc.lab.ext.core.invoker.InvokerFacade;
 import kotlin.jvm.functions.Function1;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

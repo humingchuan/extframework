@@ -1,8 +1,5 @@
-import humc.lab.ext.demo.MyBizObj
-import humc.lab.ext.demo.NameSpi
-import humc.lab.ext.demo.NameSpiImpl1
-import humc.lab.ext.demo.NameSpiImpl2
-import humc.lab.ext.facade.*
+import humc.lab.ext.core.proxy.ProxyFactoryByJDK
+import humc.lab.ext.demo.*
 
 fun main(args: Array<String>) {
     test2()
@@ -52,7 +49,7 @@ fun test2() {
     val spi: NameSpi = ProxyFactoryByJDK.proxy(NameSpi::class)
     var bizObj = MyBizObj("hi")
 
-    spi.first { enrichName(bizObj) }
+    //spi.first { enrichName(bizObj) }
     spi.enrichName(bizObj)
     println(bizObj.name)
 }

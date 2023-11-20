@@ -1,6 +1,6 @@
 package humc.lab.ext.demo
 
-import humc.lab.ext.core.Extension
+import humc.lab.ext.core.model.Extension
 import humc.lab.ext.core.Spi
 
 /**

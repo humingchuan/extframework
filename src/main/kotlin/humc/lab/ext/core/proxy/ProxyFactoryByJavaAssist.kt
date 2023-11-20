@@ -1,6 +1,6 @@
-package humc.lab.ext.facade
+package humc.lab.ext.core.proxy
 
-import humc.lab.ext.core.Extension
+import humc.lab.ext.core.model.Extension
 import javassist.ClassPool
 import javassist.CtMethod
 import kotlin.reflect.KClass
