@@ -1,6 +1,7 @@
 package humc.lab.ext.demo
 
 import humc.lab.ext.core.ExtensionCenter
+import humc.lab.ext.core.model.Spi
 
 /**
  * @author: humingchuan
@@ -9,9 +10,10 @@ import humc.lab.ext.core.ExtensionCenter
  */
 object NameSpiImpl1 : NameSpi {
     init {
-        ExtensionCenter.register(getCode(), this)
+        ExtensionCenter.register("enrichName", this)
     }
 
+    @Spi
     override fun enrichName(obj: MyBizObj) {
         obj.name = "Good_${obj.name}"
     }

@@ -1,6 +1,7 @@
 package humc.lab.ext.core.invoker
 
 import humc.lab.ext.core.model.Combinable
+import humc.lab.ext.core.model.ExtImpl
 import humc.lab.ext.core.model.Extension
 
 
@@ -10,8 +11,8 @@ import humc.lab.ext.core.model.Extension
  * @description
  */
 interface ExtensionObserver<E : Combinable<E>, R> {
-    fun before(ext: E): ProcessTag
-    fun after(ext: E, ret: R?): ResultHolder<R?>
+    fun before(ext: ExtImpl, args: Array<Any?>?): ProcessTag
+    fun after(ext: ExtImpl, ret: R?): ResultHolder<R?>
 }
 
 class ResultHolder<T>(

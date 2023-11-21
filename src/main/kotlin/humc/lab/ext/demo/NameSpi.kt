@@ -1,5 +1,6 @@
 package humc.lab.ext.demo
 
+import humc.lab.ext.core.model.ExtPoint
 import humc.lab.ext.core.model.Extension
 import humc.lab.ext.core.model.Spi
 
@@ -8,11 +9,7 @@ import humc.lab.ext.core.model.Spi
  * @date: 2023-11-19 14:31
  * @description
  */
-@Spi("NameSpi")
 interface NameSpi : Extension<NameSpi> {
-    @Spi("enrichName")
+    @ExtPoint("enrichName")
     fun enrichName(obj: MyBizObj)
-    override fun getCode(): String {
-        return "NameSpi"
-    }
 }

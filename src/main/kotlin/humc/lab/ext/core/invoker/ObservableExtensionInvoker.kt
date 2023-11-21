@@ -1,6 +1,5 @@
 package humc.lab.ext.core.invoker
 
-import humc.lab.ext.core.model.Extension
 import humc.lab.ext.core.ExtensionCenter
 import humc.lab.ext.core.model.Combinable
 
@@ -12,20 +11,20 @@ import humc.lab.ext.core.model.Combinable
 class ObservableExtensionInvoker<E : Combinable<E>, R>(
     private val observers: List<ExtensionObserver<E, R>>,
 ) {
-    fun invoke(callable: Function1<E, R>, code: String): R? {
-        val extensions = ExtensionCenter.getExtensions(code)
+    fun invoke(scenario: String, code: String, args: Array<Any?>?): R? {
+        val extImpls = ExtensionCenter.getExtensions(scenario, code)
         var ret: R? = null
-        for (extension in extensions) {
-            extension as E
+        for (extImpl in extImpls) {
             for (observer in observers) {
-                if (observer.before(extension).shouldStop()) {
+                if (observer.before(extImpl, args).shouldStop()) {
                     return ret
                 }
             }
-            ret = callable.invoke(extension)
+
+            ret = extImpl.method.invoke(args) as R?
 
             for (observer in observers) {
-                val result = observer.after(extension, ret)
+                val result = observer.after(extImpl, ret)
                 ret = result.ret
                 if (result.processTag.shouldStop()) {
                     return ret

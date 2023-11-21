@@ -1,7 +1,5 @@
 package humc.lab.ext.core.model
 
-import java.lang.annotation.Inherited
-
 /**
  * @author: humingchuan
  * @date: 2023-11-19 21:19
@@ -9,6 +7,7 @@ import java.lang.annotation.Inherited
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
-annotation class Spi(
-    val code: String = ""
+annotation class ExtPoint(
+    val code: String,
+    val strategy: InvokeStrategy = InvokeStrategy.FIRST
 )

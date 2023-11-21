@@ -9,7 +9,7 @@ import humc.lab.ext.core.ExtensionCenter
  */
 object NameSpiImpl2 : NameSpi {
     init {
-        ExtensionCenter.register(NameSpiImpl1.getCode(), this)
+        ExtensionCenter.register("enrichName", this)
     }
 
     override fun enrichName(obj: MyBizObj) {

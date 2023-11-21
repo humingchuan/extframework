@@ -1,6 +1,7 @@
 package humc.lab.ext.core.invoker
 
 import humc.lab.ext.core.model.Combinable
+import humc.lab.ext.core.model.ExtImpl
 import humc.lab.ext.core.model.Extension
 
 /**
@@ -13,18 +14,18 @@ class FirstInvoker<E : Combinable<E>, R> {
 
     init {
         val stopAfterFirst = object : ExtensionObserver<E, R> {
-            override fun before(ext: E): ProcessTag {
+            override fun before(ext: ExtImpl, args: Array<Any?>?): ProcessTag {
                 return ProcessTag.goOn()
             }
 
-            override fun after(ext: E, ret: R?): ResultHolder<R?> {
+            override fun after(ext: ExtImpl, ret: R?): ResultHolder<R?> {
                 return ResultHolder(ret, ProcessTag.stop())
             }
         }
         invoker = ObservableExtensionInvoker(listOf(stopAfterFirst))
     }
 
-    fun invoke(callable: Function1<E, R>, code: String): R? {
-        return invoker.invoke(callable, code)
+    fun invoke(scenario: String, code: String, args: Array<Any?>?): R? {
+        return invoker.invoke(scenario, code, args)
     }
 }
