@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
  * @date: 2023-11-17 22:40
  * @description
  */
-fun getCode(clazz: KClass<*>): String? {
-    val spi = clazz.java.getAnnotation(Spi::class.java)
+fun getCode(clazz: Class<*>): String? {
+    val spi = clazz.getAnnotation(Spi::class.java)
     return spi?.code
 }

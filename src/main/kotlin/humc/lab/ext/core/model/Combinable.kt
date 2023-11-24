@@ -22,8 +22,7 @@ interface Combinable<E : Combinable<E>> {
     }
 
     fun <T> allUntil(
-        checker: Function1<T?, Boolean>,
-        callable: E.() -> T
+        checker: Function1<T?, Boolean>, callable: E.() -> T
     ): T? {
         return AllUntilInvoker<E, T>(checker).invoke(callable, getCode())
     }

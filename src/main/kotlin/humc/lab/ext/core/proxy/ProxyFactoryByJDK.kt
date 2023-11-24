@@ -7,7 +7,6 @@ import sun.misc.ProxyGenerator
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.reflect.*
-import kotlin.reflect.KClass
 
 
 /**
@@ -17,11 +16,11 @@ import kotlin.reflect.KClass
  */
 class ProxyFactoryByJDK {
     companion object {
-        val fakeExtension = FakeExtension()
 
-        fun <E : Combinable<E>> proxy(clazz: KClass<E>): E {
-            val javaClazz = clazz.java
-            val proxy = Proxy.newProxyInstance(javaClazz.classLoader, arrayOf(javaClazz), object : InvocationHandler {
+        fun <E : Combinable<E>> proxy(clazz: Class<E>): E {
+            val fakeExtension = FakeExtension(clazz)
+
+            val proxy = Proxy.newProxyInstance(clazz.classLoader, arrayOf(clazz), object : InvocationHandler {
                 override fun invoke(proxy: Any, method: Method, args: Array<out Any>): Any? {
                     val declaringClass = method.declaringClass
                     if (declaringClass == Combinable::class.java) {
@@ -54,9 +53,11 @@ class ProxyFactoryByJDK {
         }
     }
 
-    class FakeExtension : ExtensionProxyJava<FakeExtension>() {
+    class FakeExtension(
+        val clazz: Class<*>
+    ) : ExtensionProxyJava<FakeExtension>() {
         override fun getCode(): String {
-            return "FakeExtension"
+            return getCode(clazz)!!
         }
     }
 
