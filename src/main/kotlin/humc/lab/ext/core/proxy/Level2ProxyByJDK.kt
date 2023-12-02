@@ -1,7 +1,7 @@
 package humc.lab.ext.core.proxy
 
 import humc.lab.ext.core.invoker.InvokerFacade
-import humc.lab.ext.core.invoker.ScenarioContext
+import humc.lab.ext.core.scenario.ScenarioContext
 import humc.lab.ext.core.model.*
 import sun.misc.ProxyGenerator
 import java.io.FileOutputStream

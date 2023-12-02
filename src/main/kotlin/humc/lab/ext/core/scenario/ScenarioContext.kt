@@ -1,4 +1,4 @@
-package humc.lab.ext.core.invoker
+package humc.lab.ext.core.scenario
 
 /**
  * @author: humingchuan

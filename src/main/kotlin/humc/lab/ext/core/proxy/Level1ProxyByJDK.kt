@@ -1,13 +1,11 @@
 package humc.lab.ext.core.proxy
 
-import humc.lab.ext.core.*
 import humc.lab.ext.core.invoker.InvokerFacade
-import humc.lab.ext.core.invoker.ScenarioContext
+import humc.lab.ext.core.scenario.ScenarioContext
 import humc.lab.ext.core.model.*
 import sun.misc.ProxyGenerator
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.RuntimeException
 import java.lang.reflect.*
 import kotlin.reflect.KClass
 
