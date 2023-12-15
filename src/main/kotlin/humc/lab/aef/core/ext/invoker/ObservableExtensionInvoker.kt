@@ -1,6 +1,9 @@
 package humc.lab.aef.core.ext.invoker
 
-import humc.lab.aef.core.ext.api.Combinable
+import humc.lab.aef.core.ext.ExtensionCenter
+import humc.lab.aef.core.session.BusinessSession
+import humc.lab.aef.core.session.ExtensionResolver
+import org.springframework.stereotype.Component
 
 
 /**
@@ -8,11 +11,17 @@ import humc.lab.aef.core.ext.api.Combinable
  * @date: 2023-11-18 16:36
  * @description
  */
-class ObservableExtensionInvoker<E : Combinable<E>, R>(
-    private val observers: List<ExtensionObserver<E, R>>,
+@Component
+// TODO: 这里依赖关系乱了，拓展点不应该依赖会话
+class ObservableExtensionInvoker(
+    private val extensionResolver: ExtensionResolver
 ) {
-    fun invoke(scenario: String, code: String, args: Array<Any?>?): R? {
-        val extImpls = humc.lab.aef.core.ext.ExtensionCenter.getExtensions(scenario, code)
+    fun <R> invoke(
+        code: String,
+        args: Array<Any?>?,
+        observers: List<ExtensionObserver>
+    ): R? {
+        val extImpls = extensionResolver.resolveExtImpl(code)
         var ret: R? = null
         for (extImpl in extImpls) {
             for (observer in observers) {
@@ -20,8 +29,11 @@ class ObservableExtensionInvoker<E : Combinable<E>, R>(
                     return ret
                 }
             }
-
-            ret = extImpl.method.invoke(args) as R?
+            if (args == null) {
+                ret = extImpl.method.invoke(extImpl._this) as R?
+            } else {
+                ret = extImpl.method.invoke(extImpl._this, *args) as R?
+            }
 
             for (observer in observers) {
                 val result = observer.after(extImpl, ret)

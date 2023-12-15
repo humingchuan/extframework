@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.lang.IllegalArgumentException
 import java.lang.reflect.Method
 import java.util.stream.Collectors
 
@@ -18,19 +17,48 @@ import java.util.stream.Collectors
  */
 @Component
 class ExtensionCenter {
-    private val instanceMap: MutableMap<String, MutableList<ExtImpl>> = mutableMapOf()
+    /**
+     * code -> scenario -> ext List
+     */
+    private val instanceMap: MutableMap<String, MutableMap<String, MutableList<ExtImpl>>> = mutableMapOf()
 
     // TODO:
     fun getExtensions(scenario: String, code: String): List<ExtImpl> {
-        return instanceMap.get(code) as List<ExtImpl>
+        return instanceMap.getOrDefault(code, emptyMap())
+            .getOrDefault(scenario, emptyList())
+    }
+
+    fun parseAnnotation(clazz: Class<Extension<*>>?): Map<String, ExtPoint> {
+        val map = mutableMapOf<String, ExtPoint>()
+        if (clazz == null) {
+            return map
+        }
+
+        var classList: List<Class<*>> = listOf(clazz)
+        while (classList.isNotEmpty()) {
+            for (cls in classList) {
+                for (method in cls.declaredMethods) {
+                    val extPoint = method.getAnnotation(ExtPoint::class.java)
+                    if (extPoint != null) {
+                        val extCode = extPoint.code
+                        map[extCode] = extPoint
+                    }
+                }
+            }
+            classList = classList.flatMap { it.interfaces.asList() }
+                .filter { Extension::class.java.isAssignableFrom(it) }
+        }
+        return map
     }
 
     fun register(scenario: String, instance: Extension<*>) {
+        val extPointMap = parseAnnotation(instance.javaClass)
+
         val extensionList = mutableMapOf<String, ExtImpl>()
         var clazz: Class<*>? = instance.javaClass
         while (clazz != null) {
             for (method in clazz.declaredMethods) {
-                val extPoint = method.getAnnotation(ExtPoint::class.java)
+                val extPoint = extPointMap.get(method.name)
                 if (extPoint != null) {
                     val extCode = extPoint.code
                     if (extensionList.containsKey(extCode)) {
@@ -38,30 +66,31 @@ class ExtensionCenter {
                     }
 
                     val instCode = "${extCode}@${instance.javaClass.name}"
-                    extensionList[extCode] = ExtImpl(extCode, instCode, method, scenario)
+                    extensionList[extCode] = ExtImpl(extCode, instCode, method, instance, scenario)
                 }
             }
             clazz = clazz.superclass.takeIf { Extension::class.java.isAssignableFrom(it) }
         }
 
         extensionList.forEach { (code, ext) ->
-            val list = instanceMap.computeIfAbsent(code) { ArrayList() }
+            val map = instanceMap.computeIfAbsent(code) { HashMap() }
+            val list = map.computeIfAbsent(scenario) { ArrayList() }
             list.add(ext)
         }
     }
 
-    fun <E : Extension<E>> register(code: String, scenario: String, instance: Extension<E>) {
-        val list = instanceMap.computeIfAbsent(code) { ArrayList() }
-        val instCode = "${code}@${instance.javaClass.name}"
-
-        val method = getMethodByCode(code, instance)
-            ?: throw IllegalArgumentException("Invalid code $code")
-
-        list.add(
-            ExtImpl(code, instCode, method, scenario)
-        )
-
-    }
+//    fun <E : Extension<E>> register(code: String, scenario: String, instance: Extension<E>) {
+//        val list = instanceMap.computeIfAbsent(code) { ArrayList() }
+//        val instCode = "${code}@${instance.javaClass.name}"
+//
+//        val method = getMethodByCode(code, instance)
+//            ?: throw IllegalArgumentException("Invalid code $code")
+//
+//        list.add(
+//            ExtImpl(code, instCode, method, scenario)
+//        )
+//
+//    }
 
     private fun getMethodByCode(code: String, instance: Extension<*>): Method? {
         var clazzList: List<Class<*>> = listOf(instance.javaClass)

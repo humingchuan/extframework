@@ -1,6 +1,8 @@
 package humc.lab.aef.core.ext.invoker
 
 import humc.lab.aef.core.ext.api.Combinable
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 
 /**
@@ -8,19 +10,24 @@ import humc.lab.aef.core.ext.api.Combinable
  * @date: 2023-11-19 14:27
  * @description
  */
-class InvokerFacade {
-    companion object {
-        fun <E : Combinable<E>, T> first(scenario: String, code: String, args: Array<Any?>?): T? {
-            return FirstInvoker<E, T>().invoke(scenario, code, args)
-        }
+@Component
+class ExtensionInvoker {
+    @Autowired
+    private lateinit var firstInvoker: FirstInvoker
+
+    @Autowired
+    private lateinit var allInvoker: AllInvoker
+    fun <E : Combinable<E>, T> first( code: String, args: Array<Any?>?): T? {
+        return firstInvoker.invoke(code, args)
+    }
 //
 //        fun <E : Combinable<E>, T> firstNonNull(scenario: String, code: String, vararg args: Any?): T? {
 //            return FirstNonNullInvoker<E, T>().invoke(callable, code)
 //        }
 
-        fun <E : Combinable<E>, T> all(scenario: String, code: String, args: Array<Any?>?): T? {
-            return AllInvoker<E, T>().invoke(scenario, code, args)
-        }
+    fun <E : Combinable<E>, T> all(scenario: String, code: String, args: Array<Any?>?): T? {
+        return allInvoker.invoke(scenario, code, args)
+    }
 //
 //        fun <E : Combinable<E>, T> allUntil(
 //            checker: Function1<T?, Boolean>,
@@ -34,6 +41,5 @@ class InvokerFacade {
 //        ): List<T> {
 //            return AllResultInvoker<E, T>().invoke(callable, code)
 //        }
-    }
 
 }

@@ -22,7 +22,7 @@ abstract class BusinessSession(
      */
     val activeProducts: List<BusinessProduct>,
 ) {
-    fun <T> run(task: Callable<T>): T {
+    fun <T> invoke(task: Callable<T>): T {
         try {
             enter(this)
             return task.call()

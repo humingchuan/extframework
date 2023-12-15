@@ -9,7 +9,6 @@ import java.lang.annotation.Inherited
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
-@Inherited
 annotation class ExtPoint(
     val code: String,
     val strategy: InvokeStrategy = InvokeStrategy.FIRST,

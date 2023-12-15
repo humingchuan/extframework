@@ -1,6 +1,8 @@
 package humc.lab.aef.core.ext.invoker
 
+import humc.lab.aef.core.ext.ExtImpl
 import humc.lab.aef.core.ext.api.Combinable
+import org.springframework.stereotype.Component
 
 
 /**
@@ -8,23 +10,24 @@ import humc.lab.aef.core.ext.api.Combinable
  * @date: 2023-11-19 13:55
  * @description
  */
-class FirstInvoker<E : Combinable<E>, R> {
-    private val invoker: ObservableExtensionInvoker<E, R>
+@Component
+class FirstInvoker(
+    private val invoker: ObservableExtensionInvoker
+) {
 
-    init {
-        val stopAfterFirst = object : ExtensionObserver<E, R> {
-            override fun before(ext: humc.lab.aef.core.ext.ExtImpl, args: Array<Any?>?): ProcessTag {
-                return ProcessTag.goOn()
-            }
+    private val stopAfterFirst: ExtensionObserver = getObserver()
 
-            override fun after(ext: humc.lab.aef.core.ext.ExtImpl, ret: R?): ResultHolder<R?> {
-                return ResultHolder(ret, ProcessTag.stop())
-            }
+    private final fun getObserver() = object : ExtensionObserver {
+        override fun before(ext: ExtImpl, args: Array<Any?>?): ProcessTag {
+            return ProcessTag.goOn()
         }
-        invoker = ObservableExtensionInvoker(listOf(stopAfterFirst))
+
+        override fun <R> after(ext: ExtImpl, ret: R?): ResultHolder<R?> {
+            return ResultHolder(ret, ProcessTag.stop())
+        }
     }
 
-    fun invoke(scenario: String, code: String, args: Array<Any?>?): R? {
-        return invoker.invoke(scenario, code, args)
+    fun <R> invoke(code: String, args: Array<Any?>?): R? {
+        return invoker.invoke(code, args, listOf(stopAfterFirst))
     }
 }

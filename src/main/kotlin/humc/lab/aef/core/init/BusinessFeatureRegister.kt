@@ -39,8 +39,8 @@ class BusinessFeatureRegister(
         scenario2.packagePrefix = "com.example.demo.scenario2"
         cfg.featureMap["scenario2"] = scenario2
         val business1 = FeatureSpec()
-        scenario2.code = "business1"
-        scenario2.packagePrefix = "com.example.demo.business1"
+        business1.code = "business1"
+        business1.packagePrefix = "com.example.demo.product1"
         cfg.featureMap["business1"] = business1
 
         register(cfg)
