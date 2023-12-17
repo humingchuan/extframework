@@ -1,5 +1,7 @@
 package humc.lab.aef.core.scenario
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 /**
@@ -9,14 +11,17 @@ import org.springframework.stereotype.Component
  */
 @Component
 class ScenarioCenter {
+    private val log: Logger = LoggerFactory.getLogger(ScenarioCenter::class.java)
     private val scenarioList: MutableMap<String, BusinessScenario> = mutableMapOf()
     private val productList: MutableMap<String, BusinessProduct> = mutableMapOf()
 
     fun addScenario(scenario: BusinessScenario) {
+        log.debug("register scenario:{}", scenario)
         scenarioList[scenario.code] = scenario
     }
 
     fun addProduct(product: BusinessProduct) {
+        log.debug("register product:{}", product)
         productList[product.code] = product
     }
 

@@ -13,5 +13,7 @@ abstract class BusinessProduct(
      */
     val staticExcludeScenarios: Set<String>
 ) : BusinessFeature(code, name) {
-
+    override fun toString(): String {
+        return "BusinessProduct(staticExcludeScenarios=$staticExcludeScenarios) ${super.toString()}"
+    }
 }

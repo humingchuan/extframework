@@ -22,28 +22,15 @@ import org.springframework.stereotype.Component
 @Component
 class BusinessFeatureRegister(
     private val extensionCenter: ExtensionCenter,
-    private val scenarioCenter: ScenarioCenter
+    private val scenarioCenter: ScenarioCenter,
+    private val scenarioConfig: ScenarioConfig
 ) :
     ApplicationListener<ContextRefreshedEvent>,
     ApplicationContextAware {
     private lateinit var ctx: ApplicationContext
     private var initialized: Boolean = false
     fun register() {
-        val cfg = ScenarioConfig()
-        val scenario1 = FeatureSpec()
-        scenario1.code = "scenario1"
-        scenario1.packagePrefix = "com.example.demo.scenario1"
-        cfg.featureMap["scenario1"] = scenario1
-        val scenario2 = FeatureSpec()
-        scenario2.code = "scenario2"
-        scenario2.packagePrefix = "com.example.demo.scenario2"
-        cfg.featureMap["scenario2"] = scenario2
-        val business1 = FeatureSpec()
-        business1.code = "business1"
-        business1.packagePrefix = "com.example.demo.product1"
-        cfg.featureMap["business1"] = business1
-
-        register(cfg)
+        register(scenarioConfig)
     }
 
     fun register(cfg: ScenarioConfig) {

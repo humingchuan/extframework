@@ -11,15 +11,6 @@ abstract class BusinessFeature(
     val code: String,
     val name: String,
 ) {
-//    private val extensionMap: MutableMap<String, MutableList<ExtImpl>> = mutableMapOf()
-//    internal fun addExtImpl(code: String, impl: ExtImpl) {
-//        val list = extensionMap.getOrElse(code) { ArrayList() }
-//        list.add(impl)
-//    }
-//
-//    internal fun getExtList(code: String): List<ExtImpl> {
-//        return extensionMap.getOrElse(code) { ArrayList() }
-//    }
 
     abstract fun isActive(obj: Any): Boolean
     override fun equals(other: Any?): Boolean {
@@ -33,5 +24,9 @@ abstract class BusinessFeature(
 
     override fun hashCode(): Int {
         return code.hashCode()
+    }
+
+    override fun toString(): String {
+        return "BusinessFeature(code='$code', name='$name')"
     }
 }

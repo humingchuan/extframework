@@ -1,9 +1,9 @@
 package humc.lab.aef.core.ext.invoker
 
-import humc.lab.aef.core.ext.ExtensionCenter
-import humc.lab.aef.core.session.BusinessSession
-import humc.lab.aef.core.session.ExtensionResolver
-import org.springframework.stereotype.Component
+import humc.lab.aef.core.ext.ExtImpl
+import lombok.extern.slf4j.Slf4j
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 
 /**
@@ -11,38 +11,62 @@ import org.springframework.stereotype.Component
  * @date: 2023-11-18 16:36
  * @description
  */
-@Component
-// TODO: 这里依赖关系乱了，拓展点不应该依赖会话
-class ObservableExtensionInvoker(
-    private val extensionResolver: ExtensionResolver
+abstract class ObservableExtensionInvoker(
 ) {
+    private val log: Logger = LoggerFactory.getLogger(ObservableExtensionInvoker::class.java)
+    abstract fun resolveExtImpl(
+        code: String,
+        args: Array<Any?>?
+    ): List<ExtImpl>
+
     fun <R> invoke(
         code: String,
         args: Array<Any?>?,
         observers: List<ExtensionObserver>
     ): R? {
-        val extImpls = extensionResolver.resolveExtImpl(code)
+        val extImpls = resolveExtImpl(code, args)
+        printExtensions(code, extImpls)
+
         var ret: R? = null
         for (extImpl in extImpls) {
+            log.debug("Extension ${extImpl.instCode} starts")
+
             for (observer in observers) {
-                if (observer.before(extImpl, args).shouldStop()) {
+                val tag = observer.before(extImpl, args)
+                if (tag.shouldStop()) {
+                    log.debug("before executing ,Extension {} stopped by {} ", extImpl.instCode, observer)
                     return ret
                 }
+                if (tag.shouldSkip()) {
+                    log.debug("before executing ,Extension {} skipped by {}", extImpl.instCode, observer)
+                    continue
+                }
             }
-            if (args == null) {
-                ret = extImpl.method.invoke(extImpl._this) as R?
+
+            ret = if (args == null) {
+                extImpl.method.invoke(extImpl._this) as R?
             } else {
-                ret = extImpl.method.invoke(extImpl._this, *args) as R?
+                extImpl.method.invoke(extImpl._this, *args) as R?
             }
 
             for (observer in observers) {
                 val result = observer.after(extImpl, ret)
                 ret = result.ret
-                if (result.processTag.shouldStop()) {
+                val tag = result.processTag
+                if (tag.shouldStop()) {
+                    log.debug("after executing ,Extension {} stopped by {}", extImpl.instCode, observer)
                     return ret
                 }
             }
         }
         return ret
+    }
+
+    private fun printExtensions(code: String, extImpls: List<ExtImpl>) {
+        if (log.isDebugEnabled) {
+            val sb: StringBuilder = StringBuilder("Extension of code $code are : \n")
+            extImpls.forEach { sb.append("\t ${it.instCode}@${it.scenario}\n") }
+            log.debug(sb.toString())
+        }
     }
 }

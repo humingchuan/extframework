@@ -2,6 +2,8 @@ package humc.lab.aef.core.ext
 
 import humc.lab.aef.core.ext.api.ExtPoint
 import humc.lab.aef.core.ext.api.Extension
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.io.BufferedReader
 import java.io.InputStream
@@ -17,6 +19,8 @@ import java.util.stream.Collectors
  */
 @Component
 class ExtensionCenter {
+    private val log: Logger = LoggerFactory.getLogger(ExtensionCenter::class.java)
+
     /**
      * code -> scenario -> ext List
      */
@@ -73,6 +77,7 @@ class ExtensionCenter {
         }
 
         extensionList.forEach { (code, ext) ->
+            log.debug("register extension {}@{}", ext.instCode, ext.scenario)
             val map = instanceMap.computeIfAbsent(code) { HashMap() }
             val list = map.computeIfAbsent(scenario) { ArrayList() }
             list.add(ext)

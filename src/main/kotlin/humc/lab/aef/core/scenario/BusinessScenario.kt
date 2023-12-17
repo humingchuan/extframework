@@ -10,4 +10,7 @@ abstract class BusinessScenario(
     name: String,
     val supportedProducts: Set<String>
 ) : BusinessFeature(code, name) {
+    override fun toString(): String {
+        return "BusinessScenario(supportedProducts=$supportedProducts) ${super.toString()}"
+    }
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 class BusinessScenario1 : BusinessScenario(
     code = "scenario1",
     name = "scenario1",
-    supportedProducts = setOf("business1")
+    supportedProducts = setOf("product1")
 ) {
     override fun isActive(obj: Any): Boolean {
         if (obj is MyBizObj) {

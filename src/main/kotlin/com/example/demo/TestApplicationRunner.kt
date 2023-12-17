@@ -18,12 +18,14 @@ class TestApplicationRunner(
 ) : ApplicationRunner {
     override fun run(args: ApplicationArguments?) {
         val spi: NameSpi = level1ProxyByJDK.proxy(NameSpi::class)
-        var bizObj = MyBizObj("hi")
+        var bizObj = MyBizObj("hi_mybaby")
 
         sessionBuilder.build(bizObj)
             .invoke {
-                spi.first().enrichName(bizObj)
-                spi.enrichName(bizObj)
+//                spi.first().enrichName(bizObj)
+//                spi.enrichName(bizObj)
+
+                spi.all().enrichName(bizObj)
                 println(bizObj.name)
             }
     }

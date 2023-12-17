@@ -1,7 +1,9 @@
 package humc.lab.aef.core.ext.proxy
 
+import com.sun.org.apache.bcel.internal.generic.SWITCH
 import humc.lab.aef.core.ext.api.Combinable
 import humc.lab.aef.core.ext.api.ExtPoint
+import humc.lab.aef.core.ext.api.InvokeStrategy
 import humc.lab.aef.core.ext.invoker.ExtensionInvoker
 import humc.lab.aef.core.session.BusinessSession
 import org.springframework.stereotype.Component
@@ -33,8 +35,12 @@ class Level1ProxyByJDK(
             override fun invoke(proxy: Any, method: Method, args: Array<Any?>?): Any? {
                 val declaringClass = method.declaringClass
                 if (declaringClass == Combinable::class.java) {
-                    // TODO: 根据方法名调用不同的代理对象
-                    return level2ProxyByJDK.proxyFirst(clazz)
+                    return when (method.name) {
+                        "first" -> level2ProxyByJDK.proxy(clazz, InvokeStrategy.FIRST)
+                        "all" -> level2ProxyByJDK.proxy(clazz, InvokeStrategy.INVOKE_ALL)
+                        else -> level2ProxyByJDK.proxy(clazz, InvokeStrategy.FIRST)
+                    }
+
                 }
 
                 // TODO:根据拓展点的规格执行不同的方法

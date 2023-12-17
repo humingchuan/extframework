@@ -2,6 +2,7 @@ package humc.lab.aef.core.ext.proxy
 
 import humc.lab.aef.core.ext.api.Combinable
 import humc.lab.aef.core.ext.api.ExtPoint
+import humc.lab.aef.core.ext.api.InvokeStrategy
 import humc.lab.aef.core.ext.invoker.ExtensionInvoker
 import humc.lab.aef.core.session.BusinessSession
 import org.springframework.stereotype.Component
@@ -27,7 +28,7 @@ class Level2ProxyByJDK(
         return annotation!!.code
     }
 
-    fun <E : Combinable<E>> proxyFirst(clazz: KClass<E>): E {
+    fun <E : Combinable<E>> proxy(clazz: KClass<E>, strategy: InvokeStrategy): E {
         val javaClazz = clazz.java
         val proxy = Proxy.newProxyInstance(javaClazz.classLoader, arrayOf(javaClazz), object : InvocationHandler {
             override fun invoke(proxy: Any, method: Method, args: Array<Any?>?): Any? {
@@ -36,9 +37,12 @@ class Level2ProxyByJDK(
                     throw RuntimeException("Should not invoke ${method.name}, since this is a proxy")
                 }
 
-                // TODO:
                 val extCode = getCodeFromMethod(method)
-                return extensionInvoker.first(extCode, args)
+                return when (strategy) {
+                    InvokeStrategy.FIRST -> extensionInvoker.first(extCode, args)
+                    InvokeStrategy.INVOKE_ALL -> extensionInvoker.all(extCode, args)
+                    else -> extensionInvoker.first(extCode, args)
+                }
             }
         })
 

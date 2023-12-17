@@ -17,7 +17,7 @@ class ExtensionInvoker {
 
     @Autowired
     private lateinit var allInvoker: AllInvoker
-    fun <E : Combinable<E>, T> first( code: String, args: Array<Any?>?): T? {
+    fun <E : Combinable<E>, T> first(code: String, args: Array<Any?>?): T? {
         return firstInvoker.invoke(code, args)
     }
 //
@@ -25,8 +25,8 @@ class ExtensionInvoker {
 //            return FirstNonNullInvoker<E, T>().invoke(callable, code)
 //        }
 
-    fun <E : Combinable<E>, T> all(scenario: String, code: String, args: Array<Any?>?): T? {
-        return allInvoker.invoke(scenario, code, args)
+    fun <E : Combinable<E>, T> all(code: String, args: Array<Any?>?): T? {
+        return allInvoker.invoke(code, args)
     }
 //
 //        fun <E : Combinable<E>, T> allUntil(

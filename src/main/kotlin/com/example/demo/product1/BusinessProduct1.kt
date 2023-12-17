@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component
  */
 @Component
 class BusinessProduct1 : BusinessProduct(
-    code = "business1",
-    name = "business1",
+    code = "product1",
+    name = "product1",
     staticExcludeScenarios = setOf()
 ) {
     override fun isActive(obj: Any): Boolean {

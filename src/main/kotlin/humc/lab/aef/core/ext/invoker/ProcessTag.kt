@@ -7,14 +7,19 @@ package humc.lab.aef.core.ext.invoker
  */
 enum class ProcessTag {
     CONTINUE,
+    SKIP,
     ABORT;
 
-    fun shouldGoOn(): Boolean {
+    fun shouldSkip(): Boolean {
+        return this == SKIP
+    }
+
+    fun shouldInvoke(): Boolean {
         return this == CONTINUE
     }
 
     fun shouldStop(): Boolean {
-        return !shouldGoOn()
+        return this == ABORT
     }
 
     companion object {

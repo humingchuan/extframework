@@ -13,26 +13,21 @@ interface Combinable<E : Combinable<E>> {
         TODO()
     }
 
-    //    fun <T> firstNonNull(): Combinable<E> {
-//        return FirstNonNullInvoker<E, T>().invoke(callable, code)
-//    }
-//
+    fun <T> firstNonNull(): E {
+        TODO()
+    }
+
     fun all(): E {
         TODO()
     }
-//
-//    fun <T> allUntil(
-//        code: String,
-//        checker: Function1<T?, Boolean>,
-//        callable: E.() -> T
-//    ): T? {
-//        return AllUntilInvoker<E, T>(checker).invoke(callable, code)
-//    }
-//
-//    fun <T> allResult(
-//        code: String,
-//        callable: E.() -> T
-//    ): List<T> {
-//        return AllResultInvoker<E, T>().invoke(callable, code)
-//    }
+
+    fun <T> until(
+        checker: Function1<T?, Boolean>
+    ): E {
+        TODO()
+    }
+
+    fun <T> allResult(): List<T> {
+        TODO()
+    }
 }

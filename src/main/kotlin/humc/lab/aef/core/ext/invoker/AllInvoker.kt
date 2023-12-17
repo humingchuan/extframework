@@ -1,7 +1,5 @@
 package humc.lab.aef.core.ext.invoker
 
-import humc.lab.aef.core.ext.api.Combinable
-import javafx.scene.paint.Stop
 import org.springframework.stereotype.Component
 
 
@@ -14,7 +12,7 @@ import org.springframework.stereotype.Component
 class AllInvoker(
     private val invoker: ObservableExtensionInvoker
 ) {
-    private val stopAfterFirstUntil: ExtensionObserver = getObserver()
+    private val neverStop: ExtensionObserver = getObserver()
 
     private final fun getObserver() = object : ExtensionObserver {
         override fun before(ext: humc.lab.aef.core.ext.ExtImpl, args: Array<Any?>?): ProcessTag {
@@ -26,8 +24,8 @@ class AllInvoker(
         }
     }
 
-    fun <T> invoke(scenario: String, code: String, args: Array<Any?>?): T? {
-        return invoker.invoke(code, args, listOf(stopAfterFirstUntil))
+    fun <T> invoke(code: String, args: Array<Any?>?): T? {
+        return invoker.invoke(code, args, listOf(neverStop))
     }
 
 }
