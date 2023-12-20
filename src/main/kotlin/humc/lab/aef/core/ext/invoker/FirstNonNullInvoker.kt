@@ -1,34 +1,36 @@
-//package humc.lab.ext.core.invoker
-//
-//import humc.lab.ext.core.api.cfg.Combinable
-//import humc.lab.ext.core.api.cfg.Extension
-//
-///**
-// * @author: humingchuan
-// * @date: 2023-11-19 14:01
-// * @description
-// */
-//class FirstNonNullInvoker<E : Combinable<E>, R> {
-//    private val invoker: ObservableExtensionInvoker<E, R>
-//
-//    init {
-//        val stopAfterFirstNonNull = object : ExtensionObserver<E, R> {
-//            override fun before(ext: E): ProcessTag {
-//                return ProcessTag.goOn()
-//            }
-//
-//            override fun after(ext: E, ret: R?): ResultHolder<R?> {
-//                return if (ret != null) {
-//                    ResultHolder(ret, ProcessTag.stop())
-//                } else {
-//                    ResultHolder(null, ProcessTag.goOn())
-//                }
-//            }
-//        }
-//        invoker = ObservableExtensionInvoker(listOf(stopAfterFirstNonNull))
-//    }
-//
-//    fun invoke(callable: Function1<E, R>, code: String): R? {
-//        return invoker.invoke(callable, code)
-//    }
-//}
+package humc.lab.aef.core.ext.invoker
+
+import humc.lab.aef.core.ext.ExtImpl
+import humc.lab.aef.core.ext.api.Combinable
+import org.springframework.stereotype.Component
+
+
+/**
+ * @author: humingchuan
+ * @date: 2023-11-19 13:55
+ * @description
+ */
+@Component
+class FirstNonNullInvoker(
+    private val invoker: ObservableExtensionInvoker
+) {
+
+    private val stopAfterFirstNonNull: ExtensionObserver = getObserver()
+
+    private final fun getObserver() = object : ExtensionObserver {
+        override fun before(ext: ExtImpl, args: Array<Any?>?): ProcessTag {
+            return ProcessTag.goOn()
+        }
+
+        override fun <R> after(ext: ExtImpl, ret: R?): ResultHolder<R?> {
+            if (ret != null) {
+                return ResultHolder(ret, ProcessTag.stop())
+            }
+            return ResultHolder(null, ProcessTag.goOn())
+        }
+    }
+
+    fun <R> invoke(code: String, args: Array<Any?>?): R? {
+        return invoker.invoke(code, args, listOf(stopAfterFirstNonNull))
+    }
+}

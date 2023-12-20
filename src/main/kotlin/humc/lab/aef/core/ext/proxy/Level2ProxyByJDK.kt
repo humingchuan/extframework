@@ -28,7 +28,7 @@ class Level2ProxyByJDK(
         return annotation!!.code
     }
 
-    fun <E : Combinable<E>> proxy(clazz: KClass<E>, strategy: InvokeStrategy): E {
+    fun proxy(clazz: KClass<*>, strategy: InvokeStrategy): Any {
         val javaClazz = clazz.java
         val proxy = Proxy.newProxyInstance(javaClazz.classLoader, arrayOf(javaClazz), object : InvocationHandler {
             override fun invoke(proxy: Any, method: Method, args: Array<Any?>?): Any? {
@@ -41,13 +41,16 @@ class Level2ProxyByJDK(
                 return when (strategy) {
                     InvokeStrategy.FIRST -> extensionInvoker.first(extCode, args)
                     InvokeStrategy.INVOKE_ALL -> extensionInvoker.all(extCode, args)
-                    else -> extensionInvoker.first(extCode, args)
+                    InvokeStrategy.FIRST_NOT_NULL -> extensionInvoker.firstNonNull(extCode, args)
+                    InvokeStrategy.UNTIL -> extensionInvoker.until(extCode, args,)
+                    InvokeStrategy.COLLECT_ALL -> TODO()
+                    InvokeStrategy.CUSTOMIZED -> TODO()
                 }
             }
         })
 
-        return proxy as E
-    };
+        return proxy
+    }
 
     private fun dumpClass(proxy: Any) {
         // 获取代理类的字节码

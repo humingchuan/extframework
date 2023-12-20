@@ -17,25 +17,31 @@ class ExtensionInvoker {
 
     @Autowired
     private lateinit var allInvoker: AllInvoker
+
+    @Autowired
+    private lateinit var firstNonNullInvoker: FirstNonNullInvoker
+
+    @Autowired
+    private lateinit var allUntilInvoker: AllUntilInvoker
     fun <E : Combinable<E>, T> first(code: String, args: Array<Any?>?): T? {
         return firstInvoker.invoke(code, args)
     }
-//
-//        fun <E : Combinable<E>, T> firstNonNull(scenario: String, code: String, vararg args: Any?): T? {
-//            return FirstNonNullInvoker<E, T>().invoke(callable, code)
-//        }
+
+    fun <E : Combinable<E>, T> firstNonNull(code: String, args: Array<Any?>?): T? {
+        return firstNonNullInvoker.invoke(code, args)
+    }
+
+    fun <E : Combinable<E>, T> until(
+        code: String, args: Array<Any?>?,
+        condition: (T?) -> Boolean
+    ): T? {
+        return allUntilInvoker.invoke(code, args, condition)
+    }
 
     fun <E : Combinable<E>, T> all(code: String, args: Array<Any?>?): T? {
         return allInvoker.invoke(code, args)
     }
-//
-//        fun <E : Combinable<E>, T> allUntil(
-//            checker: Function1<T?, Boolean>,
-//            scenario: String, code: String, vararg args: Any?
-//        ): T? {
-//            return AllUntilInvoker<E, T>(checker).invoke(callable, code)
-//        }
-//
+
 //        fun <E : Combinable<E>, T> allResult(
 //            scenario: String, code: String, vararg args: Any?
 //        ): List<T> {

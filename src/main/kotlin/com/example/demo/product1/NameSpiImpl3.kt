@@ -2,7 +2,6 @@ package com.example.demo.product1
 
 import com.example.demo.MyBizObj
 import com.example.demo.NameSpi
-import humc.lab.aef.core.ext.api.Spi
 import org.springframework.stereotype.Component
 
 /**
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component
  */
 @Component
 object NameSpiImpl3 : NameSpi {
-    @Spi
     override fun enrichName(obj: MyBizObj) {
         obj.name = "what_the_fuck_${obj.name}"
     }

@@ -6,7 +6,7 @@ package humc.lab.aef.core.ext.api
  * @description
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.FIELD)
 annotation class Spi(
     val code: String = ""
 )

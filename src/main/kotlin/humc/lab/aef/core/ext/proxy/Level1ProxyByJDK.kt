@@ -29,28 +29,26 @@ class Level1ProxyByJDK(
         return annotation!!.code
     }
 
-    fun <E : Combinable<E>> proxy(clazz: KClass<E>): E {
+//    fun <E : Combinable<E>> proxy(clazz: KClass<E>): E {
+
+    fun proxy(clazz: KClass<*>): Any {
         val javaClazz = clazz.java
         val proxy = Proxy.newProxyInstance(javaClazz.classLoader, arrayOf(javaClazz), object : InvocationHandler {
             override fun invoke(proxy: Any, method: Method, args: Array<Any?>?): Any? {
                 val declaringClass = method.declaringClass
                 if (declaringClass == Combinable::class.java) {
-                    return when (method.name) {
-                        "first" -> level2ProxyByJDK.proxy(clazz, InvokeStrategy.FIRST)
-                        "all" -> level2ProxyByJDK.proxy(clazz, InvokeStrategy.INVOKE_ALL)
-                        else -> level2ProxyByJDK.proxy(clazz, InvokeStrategy.FIRST)
-                    }
-
+                    val strategy = InvokeStrategy.values().firstOrNull { it.method.equals(method.name, true) }
+                    requireNotNull(strategy) { "Not supported method: ${method.name}" }
+                    return level2ProxyByJDK.proxy(clazz, strategy)
                 }
-
                 // TODO:根据拓展点的规格执行不同的方法
                 val extCode = getCodeFromMethod(method)
                 return extensionInvoker.first(extCode, args)
             }
         })
 
-        return proxy as E
-    };
+        return proxy
+    }
 
     private fun dumpClass(proxy: Any) {
         // 获取代理类的字节码
