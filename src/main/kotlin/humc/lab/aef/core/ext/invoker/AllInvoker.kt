@@ -1,5 +1,6 @@
 package humc.lab.aef.core.ext.invoker
 
+import humc.lab.aef.core.ext.ExtImpl
 import org.springframework.stereotype.Component
 
 
@@ -15,11 +16,11 @@ class AllInvoker(
     private val neverStop: ExtensionObserver = getObserver()
 
     private final fun getObserver() = object : ExtensionObserver {
-        override fun before(ext: humc.lab.aef.core.ext.ExtImpl, args: Array<Any?>?): ProcessTag {
+        override fun before(ext: ExtImpl, args: Array<Any?>?): ProcessTag {
             return ProcessTag.goOn()
         }
 
-        override fun <T> after(ext: humc.lab.aef.core.ext.ExtImpl, ret: T?): ResultHolder<T?> {
+        override fun <T> after(ext: ExtImpl, ret: T?): ResultHolder<T?> {
             return ResultHolder(ret, ProcessTag.goOn())
         }
     }

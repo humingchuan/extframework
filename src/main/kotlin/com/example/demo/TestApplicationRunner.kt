@@ -27,7 +27,7 @@ class TestApplicationRunner(
         sessionBuilder.build(bizObj)
             .invoke {
 //                spi.first().enrichName(bizObj)
-//                spi.enrichName(bizObj)
+                spi.enrichName(bizObj)
 
                 spi.all().enrichName(bizObj)
                 println(bizObj.name)

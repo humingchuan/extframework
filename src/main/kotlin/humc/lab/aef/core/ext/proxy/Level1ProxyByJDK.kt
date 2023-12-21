@@ -1,10 +1,14 @@
 package humc.lab.aef.core.ext.proxy
 
 import com.sun.org.apache.bcel.internal.generic.SWITCH
+import humc.lab.aef.core.ext.ExtImpl
 import humc.lab.aef.core.ext.api.Combinable
 import humc.lab.aef.core.ext.api.ExtPoint
 import humc.lab.aef.core.ext.api.InvokeStrategy
 import humc.lab.aef.core.ext.invoker.ExtensionInvoker
+import humc.lab.aef.core.ext.invoker.ExtensionObserver
+import humc.lab.aef.core.ext.invoker.ProcessTag
+import humc.lab.aef.core.ext.invoker.ResultHolder
 import humc.lab.aef.core.session.BusinessSession
 import org.springframework.stereotype.Component
 import sun.misc.ProxyGenerator
@@ -24,12 +28,9 @@ class Level1ProxyByJDK(
     private val extensionInvoker: ExtensionInvoker,
     private val level2ProxyByJDK: Level2ProxyByJDK,
 ) {
-    private fun getCodeFromMethod(method: Method): String {
-        val annotation = method.getAnnotation(ExtPoint::class.java)
-        return annotation!!.code
+    private fun getExtPoint(method: Method): ExtPoint {
+        return method.getAnnotation(ExtPoint::class.java)!!
     }
-
-//    fun <E : Combinable<E>> proxy(clazz: KClass<E>): E {
 
     fun proxy(clazz: KClass<*>): Any {
         val javaClazz = clazz.java
@@ -39,15 +40,48 @@ class Level1ProxyByJDK(
                 if (declaringClass == Combinable::class.java) {
                     val strategy = InvokeStrategy.values().firstOrNull { it.method.equals(method.name, true) }
                     requireNotNull(strategy) { "Not supported method: ${method.name}" }
-                    return level2ProxyByJDK.proxy(clazz, strategy)
+                    return when (strategy) {
+                        InvokeStrategy.FIRST,
+                        InvokeStrategy.FIRST_NOT_NULL,
+                        InvokeStrategy.INVOKE_ALL,
+                        InvokeStrategy.COLLECT_ALL -> level2ProxyByJDK.proxy(clazz, strategy)
+
+                        InvokeStrategy.CUSTOMIZED -> level2ProxyByJDK.commonProxy(clazz, args!![0] as ExtensionObserver)
+                        InvokeStrategy.UNTIL -> invokeUntil(clazz, args)
+                    }
                 }
-                // TODO:根据拓展点的规格执行不同的方法
-                val extCode = getCodeFromMethod(method)
-                return extensionInvoker.first(extCode, args)
+
+                val extPoint = getExtPoint(method)
+                val extCode = extPoint.code
+                return when (extPoint.strategy) {
+                    InvokeStrategy.FIRST -> extensionInvoker.first<Any>(extCode, args)
+                    InvokeStrategy.FIRST_NOT_NULL -> extensionInvoker.firstNonNull(extCode, args)
+                    InvokeStrategy.INVOKE_ALL -> extensionInvoker.all(extCode, args)
+                    InvokeStrategy.COLLECT_ALL,
+                    InvokeStrategy.CUSTOMIZED,
+                    InvokeStrategy.UNTIL -> TODO()
+                }
             }
         })
 
         return proxy
+    }
+
+    private fun invokeUntil(clazz: KClass<*>, args: Array<Any?>?): Any {
+        val f = args!![0] as Function1<Any?, Boolean>
+        return level2ProxyByJDK.commonProxy(clazz, object : ExtensionObserver {
+            override fun before(ext: ExtImpl, args: Array<Any?>?): ProcessTag {
+                return ProcessTag.goOn()
+            }
+
+            override fun <R> after(ext: ExtImpl, ret: R?): ResultHolder<R?> {
+                return if (f.invoke(ret)) {
+                    ResultHolder(ret, ProcessTag.goOn())
+                } else {
+                    ResultHolder(ret, ProcessTag.stop())
+                }
+            }
+        })
     }
 
     private fun dumpClass(proxy: Any) {

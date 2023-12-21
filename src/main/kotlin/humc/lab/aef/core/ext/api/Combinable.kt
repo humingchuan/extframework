@@ -1,5 +1,7 @@
 package humc.lab.aef.core.ext.api
 
+import humc.lab.aef.core.ext.invoker.ExtensionObserver
+
 /**
  * @author: Mingchuan Hu(Kevin)
  * @date: 2023-11-20 12:58
@@ -23,6 +25,12 @@ interface Combinable<E : Combinable<E>> {
 
     fun <T> until(
         checker: Function1<T?, Boolean>
+    ): E {
+        TODO()
+    }
+
+    fun <T> customized(
+        observer: ExtensionObserver
     ): E {
         TODO()
     }

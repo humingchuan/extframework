@@ -1,6 +1,5 @@
 package humc.lab.aef.core.ext.invoker
 
-import humc.lab.aef.core.ext.api.Combinable
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -19,29 +18,35 @@ class ExtensionInvoker {
     private lateinit var allInvoker: AllInvoker
 
     @Autowired
+    private lateinit var commonInvoker: CommonInvoker
+
+    @Autowired
     private lateinit var firstNonNullInvoker: FirstNonNullInvoker
 
     @Autowired
     private lateinit var allUntilInvoker: AllUntilInvoker
-    fun <E : Combinable<E>, T> first(code: String, args: Array<Any?>?): T? {
+    fun <T> first(code: String, args: Array<Any?>?): T? {
         return firstInvoker.invoke(code, args)
     }
 
-    fun <E : Combinable<E>, T> firstNonNull(code: String, args: Array<Any?>?): T? {
+    fun <T> firstNonNull(code: String, args: Array<Any?>?): T? {
         return firstNonNullInvoker.invoke(code, args)
     }
 
-    fun <E : Combinable<E>, T> until(
+    fun <T> until(
         code: String, args: Array<Any?>?,
         condition: (T?) -> Boolean
     ): T? {
         return allUntilInvoker.invoke(code, args, condition)
     }
 
-    fun <E : Combinable<E>, T> all(code: String, args: Array<Any?>?): T? {
+    fun <T> all(code: String, args: Array<Any?>?): T? {
         return allInvoker.invoke(code, args)
     }
 
+    fun <T> common(code: String, args: Array<Any?>?, observer: ExtensionObserver): T? {
+        return commonInvoker.invoke(code, args, observer)
+    }
 //        fun <E : Combinable<E>, T> allResult(
 //            scenario: String, code: String, vararg args: Any?
 //        ): List<T> {

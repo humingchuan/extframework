@@ -4,6 +4,7 @@ import humc.lab.aef.core.ext.api.Combinable
 import humc.lab.aef.core.ext.api.ExtPoint
 import humc.lab.aef.core.ext.api.InvokeStrategy
 import humc.lab.aef.core.ext.invoker.ExtensionInvoker
+import humc.lab.aef.core.ext.invoker.ExtensionObserver
 import humc.lab.aef.core.session.BusinessSession
 import org.springframework.stereotype.Component
 import sun.misc.ProxyGenerator
@@ -28,6 +29,21 @@ class Level2ProxyByJDK(
         return annotation!!.code
     }
 
+    fun commonProxy(clazz: KClass<*>, observer: ExtensionObserver): Any {
+        val javaClazz = clazz.java
+        return Proxy.newProxyInstance(
+            javaClazz.classLoader, arrayOf(javaClazz)
+        ) { _, method, args ->
+            val declaringClass = method.declaringClass
+            if (declaringClass == Combinable::class.java) {
+                throw RuntimeException("Should not invoke ${method.name}, since this is a proxy")
+            }
+
+            val extCode = getCodeFromMethod(method)
+            extensionInvoker.common(extCode, args, observer)
+        }
+    }
+
     fun proxy(clazz: KClass<*>, strategy: InvokeStrategy): Any {
         val javaClazz = clazz.java
         val proxy = Proxy.newProxyInstance(javaClazz.classLoader, arrayOf(javaClazz), object : InvocationHandler {
@@ -42,9 +58,9 @@ class Level2ProxyByJDK(
                     InvokeStrategy.FIRST -> extensionInvoker.first(extCode, args)
                     InvokeStrategy.INVOKE_ALL -> extensionInvoker.all(extCode, args)
                     InvokeStrategy.FIRST_NOT_NULL -> extensionInvoker.firstNonNull(extCode, args)
-                    InvokeStrategy.UNTIL -> extensionInvoker.until(extCode, args,)
                     InvokeStrategy.COLLECT_ALL -> TODO()
                     InvokeStrategy.CUSTOMIZED -> TODO()
+                    InvokeStrategy.UNTIL -> TODO()
                 }
             }
         })
