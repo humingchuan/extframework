@@ -1,6 +1,7 @@
 package humc.lab.aef.core.ext.api
 
 import humc.lab.aef.core.ext.invoker.ExtensionObserver
+import java.util.function.Consumer
 
 /**
  * @author: Mingchuan Hu(Kevin)
@@ -19,7 +20,11 @@ interface Combinable<E : Combinable<E>> {
         TODO()
     }
 
-    fun all(): E {
+    fun runAll(): E {
+        TODO()
+    }
+
+    fun <T> callAll(resultConsumer: Consumer<T?>): E {
         TODO()
     }
 
@@ -32,10 +37,6 @@ interface Combinable<E : Combinable<E>> {
     fun <T> customized(
         observer: ExtensionObserver
     ): E {
-        TODO()
-    }
-
-    fun <T> allResult(): List<T> {
         TODO()
     }
 }

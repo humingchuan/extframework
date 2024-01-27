@@ -56,6 +56,9 @@ abstract class BusinessSession(
                 s = Stack()
                 sessionThreadLocal.set(s)
             }
+            if (!s.isEmpty()) {
+                throw IllegalStateException("Nested session is not supported now")
+            }
             sessionMap[context.id] = context
             s.push(context.id)
         }

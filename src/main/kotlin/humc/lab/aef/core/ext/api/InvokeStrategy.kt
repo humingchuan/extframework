@@ -8,8 +8,8 @@ package humc.lab.aef.core.ext.api
 enum class InvokeStrategy(val method: String) {
     FIRST("first"),
     FIRST_NOT_NULL("firstNonNull"),
-    INVOKE_ALL("all"),
-    COLLECT_ALL("allResult"),
+    INVOKE_ALL("runAll"),
+    COLLECT_ALL("callAll"),
     CUSTOMIZED("customized"),
     UNTIL("until"),
 

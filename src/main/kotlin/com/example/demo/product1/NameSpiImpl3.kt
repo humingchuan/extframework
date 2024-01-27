@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 @Component
 object NameSpiImpl3 : NameSpi {
     override fun enrichName(obj: MyBizObj) {
-        obj.name = "what_the_fuck_${obj.name}"
+        obj.name = "${obj.name}_NameSpiImpl3"
     }
 
 }

@@ -3,11 +3,9 @@ package com.example.demo
 import humc.lab.aef.core.ext.api.Spi
 import humc.lab.aef.core.ext.proxy.Level1ProxyByJDK
 import humc.lab.aef.core.session.BusinessSessionBuilder
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Component
-import sun.rmi.rmic.Names
 
 /**
  * @author: humingchuan
@@ -22,14 +20,15 @@ class TestApplicationRunner(
     @Spi
     private lateinit var spi: NameSpi
     override fun run(args: ApplicationArguments?) {
-        var bizObj = MyBizObj("hi_mybaby")
+        var bizObj = MyBizObj("hi_")
 
         sessionBuilder.build(bizObj)
             .invoke {
 //                spi.first().enrichName(bizObj)
                 spi.enrichName(bizObj)
 
-                spi.all().enrichName(bizObj)
+                spi.runAll().enrichName(bizObj)
+                spi.until<MyBizObj> {  it.name.length > 10}
                 println(bizObj.name)
             }
     }

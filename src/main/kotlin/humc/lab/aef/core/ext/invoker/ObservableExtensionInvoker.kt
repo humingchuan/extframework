@@ -1,7 +1,6 @@
 package humc.lab.aef.core.ext.invoker
 
 import humc.lab.aef.core.ext.ExtImpl
-import lombok.extern.slf4j.Slf4j
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -44,9 +43,9 @@ abstract class ObservableExtensionInvoker(
             }
 
             ret = if (args == null) {
-                extImpl.method.invoke(extImpl._this) as R?
+                extImpl.method.invoke(extImpl.this_) as R?
             } else {
-                extImpl.method.invoke(extImpl._this, *args) as R?
+                extImpl.method.invoke(extImpl.this_, *args) as R?
             }
 
             for (observer in observers) {
