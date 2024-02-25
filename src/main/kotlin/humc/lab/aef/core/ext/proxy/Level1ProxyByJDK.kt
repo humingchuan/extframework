@@ -1,19 +1,9 @@
 package humc.lab.aef.core.ext.proxy
 
-import com.sun.org.apache.bcel.internal.generic.SWITCH
 import humc.lab.aef.core.ext.ExtImpl
-import humc.lab.aef.core.ext.api.Combinable
-import humc.lab.aef.core.ext.api.ExtPoint
-import humc.lab.aef.core.ext.api.InvokeStrategy
-import humc.lab.aef.core.ext.invoker.ExtensionInvoker
-import humc.lab.aef.core.ext.invoker.ExtensionObserver
-import humc.lab.aef.core.ext.invoker.ProcessTag
-import humc.lab.aef.core.ext.invoker.ResultHolder
-import humc.lab.aef.core.session.BusinessSession
+import humc.lab.aef.core.ext.api.*
+import humc.lab.aef.core.ext.invoker.*
 import org.springframework.stereotype.Component
-import sun.misc.ProxyGenerator
-import java.io.FileOutputStream
-import java.io.IOException
 import java.lang.reflect.*
 import kotlin.reflect.KClass
 
@@ -83,23 +73,23 @@ class Level1ProxyByJDK(
             }
         })
     }
-
-    private fun dumpClass(proxy: Any) {
-        // 获取代理类的字节码
-        // 获取代理类的字节码
-        val proxyClassBytes = ProxyGenerator.generateProxyClass(
-            proxy.javaClass.canonicalName,  // 代理类的类名
-            proxy.javaClass.interfaces // 代理类实现的接口列表
-        )
-
-        // 将代理类的字节码保存到文件中
-
-        // 将代理类的字节码保存到文件中
-        try {
-            FileOutputStream("ProxyClass.class").use { fos -> fos.write(proxyClassBytes) }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
+    //
+    //private fun dumpClass(proxy: Any) {
+    //    // 获取代理类的字节码
+    //    // 获取代理类的字节码
+    //    val proxyClassBytes = ProxyGenerator.generateProxyClass(
+    //        proxy.javaClass.canonicalName,  // 代理类的类名
+    //        proxy.javaClass.interfaces // 代理类实现的接口列表
+    //    )
+    //
+    //    // 将代理类的字节码保存到文件中
+    //
+    //    // 将代理类的字节码保存到文件中
+    //    try {
+    //        FileOutputStream("ProxyClass.class").use { fos -> fos.write(proxyClassBytes) }
+    //    } catch (e: IOException) {
+    //        e.printStackTrace()
+    //    }
+    //}
 }
 

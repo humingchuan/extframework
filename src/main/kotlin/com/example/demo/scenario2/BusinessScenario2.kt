@@ -17,7 +17,7 @@ class BusinessScenario2 : BusinessScenario(
 ) {
     override fun isActive(obj: Any): Boolean {
         if (obj is MyBizObj) {
-            return obj.name.length <= 5
+            return obj.name.length < 5
         }
         return false
     }

@@ -22,7 +22,7 @@ class BusinessSessionBuilder(
 
         val filteredProducts = products.filter { scenario.supportedProducts.contains(it.code) }
 
-        log.debug("session built by {} with products {}", scenario, filteredProducts)
+        log.debug("session built for {} with products {}", scenario, filteredProducts)
         return object : BusinessSession(toString(), scenario, filteredProducts) {}
     }
 }
