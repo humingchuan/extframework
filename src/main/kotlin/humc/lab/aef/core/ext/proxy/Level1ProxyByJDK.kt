@@ -73,7 +73,7 @@ class Level1ProxyByJDK(
             }
         })
     }
-
+    //
     //private fun dumpClass(proxy: Any) {
     //    // 获取代理类的字节码
     //    // 获取代理类的字节码
