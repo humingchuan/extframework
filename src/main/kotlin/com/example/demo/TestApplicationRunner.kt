@@ -28,7 +28,7 @@ class TestApplicationRunner(
                 spi.enrichName(bizObj)
 
                 spi.runAll().enrichName(bizObj)
-                spi.until<MyBizObj> {  it.name.length > 10}
+                spi.until<MyBizObj> { it != null && it.name.length > 10 }.enrichName(bizObj)
                 println(bizObj.name)
             }
     }
