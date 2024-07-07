@@ -63,16 +63,26 @@ abstract class BusinessSession(
             s.push(context.id)
         }
 
-        fun exit() {
+        fun exit(): String? {
             val stack = sessionThreadLocal.get()
             if (stack == null || stack.isEmpty()) {
                 sessionThreadLocal.remove()
+                return null
             }
+
             val sessionId = stack.pop()
             sessionMap.remove(sessionId)
 
             if (stack.isEmpty()) {
                 sessionThreadLocal.remove()
+            }
+            return sessionId
+        }
+
+        fun exitAll() {
+            var session: String? = exit()
+            while (session != null) {
+                session = exit()
             }
         }
     }
